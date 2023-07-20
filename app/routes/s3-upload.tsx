@@ -1,13 +1,13 @@
-import type { ActionFunction, UploadHandler } from "@remix-run/node";
+import type { ActionFunction, UploadHandler } from '@remix-run/node';
 import {
   json,
   unstable_composeUploadHandlers as composeUploadHandlers,
   unstable_createMemoryUploadHandler as createMemoryUploadHandler,
   unstable_parseMultipartFormData as parseMultipartFormData,
-} from "@remix-run/node";
-import { useFetcher } from "@remix-run/react";
+} from '@remix-run/node';
+import { useFetcher } from '@remix-run/react';
 
-import { s3UploadHandler } from "~/utils/s3.server";
+import { s3UploadHandler } from '~/utils/s3.server';
 
 type ActionData = {
   errorMsg?: string;
@@ -21,12 +21,12 @@ export const action: ActionFunction = async ({ request }) => {
     createMemoryUploadHandler()
   );
   const formData = await parseMultipartFormData(request, uploadHandler);
-  const imgSrc = formData.get("img");
-  const imgDesc = formData.get("desc");
+  const imgSrc = formData.get('img');
+  const imgDesc = formData.get('desc');
   console.log(imgDesc);
   if (!imgSrc) {
     return json({
-      errorMsg: "Something went wrong while uploading",
+      errorMsg: 'Something went wrong while uploading',
     });
   }
   return json({
@@ -39,26 +39,26 @@ export default function Index() {
   const fetcher = useFetcher<ActionData>();
   return (
     <>
-      <fetcher.Form method="post" encType="multipart/form-data">
-        <label htmlFor="img-field">Image to upload</label>
-        <input id="img-field" type="file" name="img" accept="image/*" />
-        <label htmlFor="img-desc">Image alt & title</label>
-        <input id="img-desc" type="text" name="desc" />
-        <button type="submit">Upload to S3</button>
+      <fetcher.Form method='post' encType='multipart/form-data'>
+        <label htmlFor='img-field'>Image to upload</label>
+        <input id='img-field' type='file' name='img' accept='image/*' />
+        <label htmlFor='img-desc'>Image alt & title</label>
+        <input id='img-desc' type='text' name='desc' />
+        <button type='submit'>Upload to S3</button>
       </fetcher.Form>
-      {fetcher.type === "done" ? (
+      {fetcher.type === 'done' ? (
         fetcher.data.errorMsg ? (
           <h2>{fetcher.data.errorMsg}</h2>
         ) : (
           <>
-            <div>
+            <div style={{ backgroundColor: 'crimson' }}>
               File has been uploaded to S3 and is available under the following
               URL (if the bucket has public access enabled):
             </div>
             <div>{fetcher.data.imgSrc}</div>
             <img
               src={fetcher.data.imgSrc}
-              alt={fetcher.data.imgDesc || "Uploaded image from S3"}
+              alt={fetcher.data.imgDesc || 'Uploaded image from S3'}
               title={fetcher.data.imgDesc}
             />
           </>
